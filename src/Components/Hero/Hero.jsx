@@ -97,7 +97,7 @@ const Hero = () => {
     //   </div>
     // </section>
   
-    <section className="w-full py-10 bg-[#F8F8F8]">
+    <section className="w-full py-10 bg-[#F8F8F8] mb-5">
 
     <div className="relative w-[80%] h-[80vh] mx-auto">
 

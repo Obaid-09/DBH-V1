@@ -1,10 +1,19 @@
 import React from 'react'
 import Hero from '../Components/Hero/Hero'
+import Popular from '../Components/Popular/Popular'
+import Offers from '../Components/Offers/Offers'
+import NewCollections from '../Components/NewCollections/NewCollections'
+import Newsletter from '../Components/NewsLetter/NewsLetter'
+
 
 const Shop = () => {
   return (
-    <div className='h-[400px] max-h-[500px] bg-[#F8F6F2]'>
+    <div className='bg-[#F8F6F2]'>
       <Hero/>
+      <Popular/>
+      <Offers/>
+      <NewCollections/>
+      <Newsletter/>
     </div>
   )
 }
