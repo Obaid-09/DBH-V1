@@ -1,15 +1,17 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import logo from "../Assets/logo.jpg";
 //import cart from "../Assets/cart.jpg";
 //import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FiShoppingCart } from "react-icons/fi";
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-
+import { ShopContext } from '../../Context/ShpContext';
 
 const Navbar = () => {
 
+    const { cartItems } = useContext(ShopContext);
     const location = useLocation();
+    console.log(cartItems);
 
     return (
         <div className='w-full h-[90px] px-8 flex justify-between items-center bg-white shadow-sm'>
@@ -88,10 +90,15 @@ const Navbar = () => {
 
                 <Link to='/cart'>
                     <div className="relative cursor-pointer group">
-                        <FiShoppingCart className="text-[32px] text-[#111111] group-hover:text-[#C9A227] transition-all duration-300" />
+                        <FiShoppingCart className="text-[38px] text-[#111111] group-hover:text-[#C9A227] transition-all duration-300" />
 
-                        <span className="absolute -top-2 -right-2 bg-[#C9A227] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                            2
+                        <span className="absolute -top-2 -right-3 bg-[#C9A227] text-white text-[12px] font-semibold w-6 h-6 rounded-full flex items-center justify-center">
+                            {
+                                Object.values(cartItems).reduce(
+                                    (total, item) => total + item,
+                                    0
+                                )
+                            }
                         </span>
                     </div>
                 </Link>
@@ -99,6 +106,8 @@ const Navbar = () => {
             </div>
 
         </div>
+
+        
     );
 };
 
