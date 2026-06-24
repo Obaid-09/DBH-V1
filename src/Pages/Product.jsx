@@ -3,8 +3,32 @@ import { ShopContext } from '../Context/ShpContext';
 import { useParams } from 'react-router-dom';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import RelatedProducts from '../Components/RelatedProducts/RelatedProducts';
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 import Breadcrum from '../Components/Breadcrum/Breadcrum';
+
+const renderStars = (rating) => {
+    const stars = [];
+
+    for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(rating)) {
+            stars.push(
+                <FaStar key={i} className="text-[#C9A227]" />
+            );
+        }
+        else if (i - rating <= 0.5) {
+            stars.push(
+                <FaStarHalfAlt key={i} className="text-[#C9A227]" />
+            );
+        }
+        else {
+            stars.push(
+                <FaRegStar key={i} className="text-[#C9A227]" />
+            );
+        }
+    }
+    return stars;
+};
 
 const Product = () => {
 
@@ -18,8 +42,7 @@ const Product = () => {
         (e) => e.id === Number(productId)
     );
 
-    console.log(product);
-    console.log(addToCart);
+    console.log(product.rating);
     // Product not found
     if (!product) {
         return (
@@ -127,6 +150,18 @@ const Product = () => {
                     <h1 className='text-5xl font-serif text-[#111111]'>
                         {product.name}
                     </h1>
+
+                    <div className='flex items-center gap-2'>
+
+                        <div className='flex gap-1 text-[#C9A227] text-lg'>
+                            {renderStars(product.rating)}
+                        </div>
+
+                        <span className='text-gray-500'>
+                            ({product.rating}) • 124 Reviews
+                        </span>
+
+                    </div>
 
                     {/* Price */}
                     <div className='flex items-center gap-5'>

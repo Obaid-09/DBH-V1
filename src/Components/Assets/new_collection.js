@@ -11,6 +11,7 @@ const new_collection = [
     image: nc1,
     new_price: 3499,
     old_price: 4299,
+    rating: 4.8
   },
   {
     id: 2,
@@ -18,6 +19,7 @@ const new_collection = [
     image: nc2,
     new_price: 2999,
     old_price: 3799,
+    rating: 4.5
   },
   {
     id: 3,
@@ -25,6 +27,7 @@ const new_collection = [
     image: nc3,
     new_price: 2799,
     old_price: 3499,
+    rating: 4.8
   },
   {
     id: 4,
@@ -32,6 +35,7 @@ const new_collection = [
     image: nc4,
     new_price: 3999,
     old_price: 4899,
+    rating: 4.2
   },
   {
     id: 5,
@@ -39,6 +43,7 @@ const new_collection = [
     image: nc5,
     new_price: 2599,
     old_price: 3199,
+    rating: 4.1
   }
 ]
 

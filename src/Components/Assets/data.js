@@ -14,6 +14,7 @@ let data_product = [
     image: p1_img,
     new_price: 2499,
     old_price: 2999,
+    rating: 4.8
   },
   {
     id: 2,
@@ -21,6 +22,7 @@ let data_product = [
     image: p2_img,
     new_price: 2799,
     old_price: 3299,
+    rating: 4.3
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ let data_product = [
     image: p3_img,
     new_price: 3199,
     old_price: 3799,
+    rating: 4.4
   },
   {
     id: 4,
@@ -35,6 +38,7 @@ let data_product = [
     image: p4_img,
     new_price: 2899,
     old_price: 3499,
+    rating: 4.7
   }
 //   {
 //     id: 5,

@@ -1,15 +1,50 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ShopContext } from '../../Context/ShpContext';
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
-const Item = ({ id, image, name, new_price, old_price }) => {
+
+
+const renderStars = (rating) => {
+    const stars = [];
+
+    for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(rating)) {
+            stars.push(
+                <FaStar key={i} className="text-[#C9A227]" />
+            );
+        }
+        else if (i - rating <= 0.5) {
+            stars.push(
+                <FaStarHalfAlt key={i} className="text-[#C9A227]" />
+            );
+        }
+        else {
+            stars.push(
+                <FaRegStar key={i} className="text-[#C9A227]" />
+            );
+        }
+    }
+
+    return stars;
+};
+
+
+const Item = ({ id, image, name, new_price, old_price, rating }) => {
   const {addToCart} = useContext(ShopContext)
-  console.log("Item ID:", id);
+  const {
+    addToWishlist,
+    removeFromWishlist,
+    wishlistItems
+} = useContext(ShopContext);
+
+console.log(name, rating);
   return (
     <div className="w-[260px] bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group">
 
       {/* Product Image */}
-      <div className="overflow-hidden">
+      <div className="relative overflow-hidden">
         <Link to = {`/product/${id}`}>
           <img
           onClick={() => window.scrollTo(0, 0)}
@@ -18,6 +53,27 @@ const Item = ({ id, image, name, new_price, old_price }) => {
           className="w-full h-[280px] object-cover group-hover:scale-105 transition-all duration-500"
         />
         </Link>
+
+        <div
+            className="absolute top-4 right-4 z-10"
+            onClick={(e) => {
+                e.stopPropagation();
+
+                wishlistItems.includes(id)
+                    ? removeFromWishlist(id)
+                    : addToWishlist(id);
+            }}
+        >
+            {
+                wishlistItems.includes(id)
+                    ? (
+                        <FaHeart className="text-[#C9A227] text-2xl cursor-pointer" />
+                    )
+                    : (
+                        <FaRegHeart className="text-white text-2xl cursor-pointer hover:text-[#C9A227] transition-all duration-300" />
+                    )
+            }
+        </div>
       </div>
 
       {/* Product Details */}
@@ -27,6 +83,16 @@ const Item = ({ id, image, name, new_price, old_price }) => {
         <h3 className="text-[#111111] text-[15px] font-semibold mb-4 line-clamp-2">
           {name}
         </h3>
+        
+        <div className="flex items-center gap-2 mb-3">
+            <div className="flex gap-1">
+                {renderStars(rating)}
+            </div>
+
+            <span className="text-sm text-gray-500">
+                ({rating})
+            </span>
+        </div>
 
         {/* Prices */}
         <div className="flex items-center gap-4 mb-5">
@@ -44,7 +110,6 @@ const Item = ({ id, image, name, new_price, old_price }) => {
         {/* Button */}
         <button 
             onClick={() => {
-            console.log("Button Clicked");
             addToCart(id);
         }}
         className="cursor-pointer w-full py-3 bg-[#C9A227] text-white rounded-full font-semibold text-lg hover:bg-[#b08d1f] hover:shadow-lg transition-all duration-300">

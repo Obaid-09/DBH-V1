@@ -67,7 +67,7 @@ const ShopCategory = (props) => {
             </div>
 
             {/* Products Grid */}
-            <div className='grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8'>
                 {
                     filteredProducts.map((item) => (
                         <Item
@@ -77,6 +77,7 @@ const ShopCategory = (props) => {
                             name={item.name}
                             new_price={item.new_price}
                             old_price={item.old_price}
+                            rating={item.rating}
                         />
                     ))
                 }

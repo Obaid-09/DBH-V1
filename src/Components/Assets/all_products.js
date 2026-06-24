@@ -19,6 +19,7 @@ const all_products = [
     gallery: [p1_img, p1_img, p1_img, p1_img],
     new_price: 2499,
     old_price: 2999,
+    rating: 4.8
   },
 
   {
@@ -29,6 +30,7 @@ const all_products = [
     gallery: [p2_img, p2_img, p2_img, p2_img],
     new_price: 2799,
     old_price: 3299,
+    rating: 4.4
   },
 
   {
@@ -39,6 +41,7 @@ const all_products = [
     gallery: [p3_img, p3_img, p3_img, p3_img],
     new_price: 2299,
     old_price: 2799,
+    rating: 4.2
   },
 
   {
@@ -49,6 +52,7 @@ const all_products = [
     gallery: [p4_img, p4_img, p4_img, p4_img],
     new_price: 3199,
     old_price: 3799,
+    rating: 4.5
   },
 
   {
@@ -59,6 +63,7 @@ const all_products = [
     gallery: [p5_img, p5_img, p5_img, p5_img],
     new_price: 699,
     old_price: 999,
+    rating: 4.3
   },
 
   {
@@ -69,6 +74,7 @@ const all_products = [
     gallery: [p6_img, p6_img, p6_img, p6_img],
     new_price: 799,
     old_price: 1099,
+    rating: 4.8
   },
 
   {
@@ -79,6 +85,7 @@ const all_products = [
     gallery: [p7_img, p7_img, p7_img, p7_img],
     new_price: 899,
     old_price: 1199,
+    rating: 4.7
   },
 
   {
@@ -89,6 +96,7 @@ const all_products = [
     gallery: [p8_img, p8_img, p8_img, p8_img],
     new_price: 599,
     old_price: 799,
+    rating: 4.6
   }
 ];
 

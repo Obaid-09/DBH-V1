@@ -135,23 +135,23 @@ const Hero = () => {
         {/* Left Arrow */}
         <button
             onClick={prevSlide}
-            className="absolute top-1/2 -left-20 -translate-y-1/2
+            className="absolute top-1/2 md:-left-20 -left-10 -translate-y-1/2
                        bg-white shadow-lg rounded-full p-4
                        hover:bg-[#C9A227] hover:text-white
                        transition-all duration-300"
         >
-            <FiChevronLeft className="text-4xl" />
+            <FiChevronLeft className="md:text-4xl sm:text-3xl text-2xl" />
         </button>
 
         {/* Right Arrow */}
         <button
             onClick={nextSlide}
-            className="absolute top-1/2 -right-20 -translate-y-1/2
+            className="absolute top-1/2 md:-right-20 -right-10 -translate-y-1/2
                        bg-white shadow-lg rounded-full p-4
                        hover:bg-[#C9A227] hover:text-white
                        transition-all duration-300"
         >
-            <FiChevronRight className="text-4xl" />
+            <FiChevronRight className="md:text-4xl sm:text-3xl text-2xl" />
         </button>
 
         {/* Dots */}

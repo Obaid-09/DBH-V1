@@ -1,5 +1,6 @@
 import React, { createContext, useState } from "react";
 import all_products from "../Components/Assets/all_products";
+import { toast } from 'react-toastify';
 
 // Create Context
 export const ShopContext = createContext(null);
@@ -17,6 +18,7 @@ const getDefaultCart = () => {
 
 const ShopContextProvider = (props) => {
 
+    const [wishlistItems, setWishlistItems] = useState([]);
     const [cartItems, setCartItems] = useState(getDefaultCart());
 
     // Add Item
@@ -25,7 +27,7 @@ const ShopContextProvider = (props) => {
             ...prev,
             [itemId]: prev[itemId] + 1
         }));
-        console.log("Added:", itemId);
+        toast.success("Item added to cart 🛒");
     };
 
     // Remove Item
@@ -56,12 +58,30 @@ const ShopContextProvider = (props) => {
         return totalAmount;
     };
 
+    const addToWishlist = (itemId) => {
+
+        if (!wishlistItems.includes(itemId)) {
+            setWishlistItems((prev) => [...prev, itemId]);
+        }
+        toast.success("Added to Wishlist ❤️");
+    };
+
+    const removeFromWishlist = (itemId) => {
+        setWishlistItems(
+            wishlistItems.filter((id) => id !== itemId)
+        );
+        toast.info("Removed from Wishlist");
+    };
+
     const contextValue = {
         all_products,
         cartItems,
         addToCart,
         removeFromCart,
-        getTotalCartAmount
+        getTotalCartAmount,
+        wishlistItems,
+        addToWishlist,
+        removeFromWishlist
     };
 
     return (

@@ -42,6 +42,7 @@ const RelatedProducts = ({ category, currentProductId }) => {
                             name={item.name}
                             new_price={item.new_price}
                             old_price={item.old_price}
+                            rating={item.rating}
                         />
                     ))
                 }

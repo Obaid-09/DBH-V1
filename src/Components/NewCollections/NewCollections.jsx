@@ -27,7 +27,7 @@ const NewCollections = () => {
       </div>
 
       {/* Products */}
-      <div className='grid grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center'>
         {new_collection.map((item) => (
           <Item
             key={item.id}
@@ -36,6 +36,7 @@ const NewCollections = () => {
             image={item.image}
             new_price={item.new_price}
             old_price={item.old_price}
+            rating={item.rating}
           />
         ))}
       </div>
