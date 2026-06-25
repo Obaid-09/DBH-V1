@@ -1,133 +1,195 @@
-import React, {useContext} from 'react'
+import React, { useContext, useState } from 'react';
 import logo from "../Assets/logo.jpg";
 import SearchBar from '../SearchBar/SearchBar';
-//import cart from "../Assets/cart.jpg";
-//import { HiOutlineShoppingBag } from "react-icons/hi";
 import { FiShoppingCart } from "react-icons/fi";
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ShopContext } from '../../Context/ShpContext';
 import { FaRegHeart } from "react-icons/fa";
+import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 
 const Navbar = () => {
 
     const { cartItems, wishlistItems } = useContext(ShopContext);
     const location = useLocation();
-    console.log(cartItems);
+
+    const [mobileMenu, setMobileMenu] = useState(false);
 
     return (
-        <div className='w-full h-[90px] px-5 flex justify-around items-center bg-white shadow-sm'>
+        <>
+            <div className='w-full h-[90px] px-5 flex justify-between items-center bg-white shadow-sm relative'>
 
-            {/* Logo */}
-            <div className='flex items-center cursor-pointer'>
-                <img
-                    src={logo}
-                    alt="Dubai Burqa House Logo"
-                    className='sm:w-[60px] sm:h-[60px] w-[45px] h-[45px] object-cover'
-                />
+                {/* Left Section */}
+                <div className='flex items-center gap-2'>
 
-                <p className='sm:w-[90px] w-[70px] sm:text-[12px] text-start lg:text-[16px] text-[10px] uppercase tracking-[3px] text-[#C9A227] font-medium'>
-                    Dubai Burqa House
-                </p>
+                    {/* Mobile Menu Icon */}
+                    <div className='min-[420px]:hidden'>
+                        {
+                            mobileMenu ? (
+                                <HiOutlineX
+                                    className='text-3xl cursor-pointer'
+                                    onClick={() => setMobileMenu(false)}
+                                />
+                            ) : (
+                                <HiOutlineMenu
+                                    className='text-3xl cursor-pointer'
+                                    onClick={() => setMobileMenu(true)}
+                                />
+                            )
+                        }
+                    </div>
+
+                    {/* Logo */}
+                    <div className='flex items-center cursor-pointer'>
+                        <img
+                            src={logo}
+                            alt="Dubai Burqa House Logo"
+                            className='sm:w-[60px] sm:h-[60px] w-[45px] h-[45px] object-cover'
+                        />
+
+                        <p className='sm:w-[90px] w-[70px] sm:text-[12px] text-start lg:text-[16px] text-[10px] uppercase tracking-[3px] text-[#C9A227] font-medium'>
+                            Dubai Burqa House
+                        </p>
+                    </div>
+
+                </div>
+
+                {/* Desktop Nav Links */}
+                <ul className='hidden min-[420px]:flex gap-2 sm:gap-5 sm:text-sm text-xs md:text-lg font-semibold'>
+
+                    <li
+                        className={`cursor-pointer flex flex-col items-center transition-all duration-300 ${
+                            location.pathname === "/"
+                                ? "text-[#C9A227]"
+                                : "text-[#111111] hover:text-[#C9A227]"
+                        }`}
+                    >
+                        <Link to='/'>Shop</Link>
+
+                        {location.pathname === "/" && (
+                            <div className='w-[80%] h-[3px] bg-[#C9A227] mt-1 rounded-full'></div>
+                        )}
+                    </li>
+
+                    <li
+                        className={`cursor-pointer flex flex-col items-center transition-all duration-300 ${
+                            location.pathname === "/abaya"
+                                ? "text-[#C9A227]"
+                                : "text-[#111111] hover:text-[#C9A227]"
+                        }`}
+                    >
+                        <Link to='/abaya'>Abaya</Link>
+
+                        {location.pathname === "/abaya" && (
+                            <div className='w-[80%] h-[3px] bg-[#C9A227] mt-1 rounded-full'></div>
+                        )}
+                    </li>
+
+                    <li
+                        className={`cursor-pointer flex flex-col items-center transition-all duration-300 ${
+                            location.pathname === "/scarf"
+                                ? "text-[#C9A227]"
+                                : "text-[#111111] hover:text-[#C9A227]"
+                        }`}
+                    >
+                        <Link to='/scarf'>Scarfs</Link>
+
+                        {location.pathname === "/scarf" && (
+                            <div className='w-[80%] h-[3px] bg-[#C9A227] mt-1 rounded-full'></div>
+                        )}
+                    </li>
+
+                </ul>
+
+                {/* Search */}
+                <div className='hidden md:block'>
+                    <SearchBar />
+                </div>
+
+                {/* Actions */}
+                <div className='flex gap-2 md:gap-6 items-center'>
+
+                    <Link to='/login'>
+                        <button className="px-4 py-2 md:px-7 md:py-2.5 bg-[#C9A227] text-white md:text-[20px] text-[13px] rounded-full font-semibold hover:bg-[#b08d1f] hover:shadow-lg transition-all duration-300">
+                            Login
+                        </button>
+                    </Link>
+
+                    {/* Wishlist */}
+                    <Link to='/wishlist'>
+                        <div className="relative cursor-pointer group">
+
+                            <FaRegHeart className="text-[25px] md:text-[30px] text-[#111111] group-hover:text-[#C9A227] transition-all duration-300" />
+
+                            <span className="absolute -top-2 -right-3 bg-[#C9A227] text-white text-[12px] font-semibold w-6 h-6 rounded-full flex items-center justify-center">
+                                {wishlistItems.length}
+                            </span>
+
+                        </div>
+                    </Link>
+
+                    {/* Cart */}
+                    <Link to='/cart'>
+                        <div className="relative cursor-pointer group">
+
+                            <FiShoppingCart className="sm:text-[30px] text-[25px] md:text-[38px] text-[#111111] group-hover:text-[#C9A227] transition-all duration-300" />
+
+                            <span className="absolute -top-2 -right-3 bg-[#C9A227] text-white text-[12px] font-semibold w-6 h-6 rounded-full flex items-center justify-center">
+                                {
+                                    Object.values(cartItems).reduce(
+                                        (total, item) => total + item,
+                                        0
+                                    )
+                                }
+                            </span>
+
+                        </div>
+                    </Link>
+
+                </div>
+
             </div>
 
-            {/* Nav Links */}
-            <ul className='flex gap-2 sm:gap-5  sm:text-sm text-xs md:text-lg font-semibold'>
+            {/* Mobile Dropdown Menu */}
+            {
+                mobileMenu && (
+                    <div className='min-[420px]:hidden bg-white shadow-lg py-6 z-50'>
 
-            {/* Shop */}
-            <li
-                className={`cursor-pointer flex flex-col items-center transition-all duration-300 ${
-                    location.pathname === "/"
-                        ? "text-[#C9A227]"
-                        : "text-[#111111] hover:text-[#C9A227]"
-                }`}
-            >
-                <Link to='/'>Shop</Link>
+                        <ul className='flex flex-col items-center gap-6 font-semibold text-[#111111]'>
 
-                {location.pathname === "/" && (
-                    <div className='w-[80%] h-[3px] bg-[#C9A227] mt-1 rounded-full'></div>
-                )}
-            </li>
+                            <Link
+                                to='/'
+                                onClick={() => setMobileMenu(false)}
+                            >
+                                <li className='hover:text-[#C9A227]'>
+                                    Shop
+                                </li>
+                            </Link>
 
-            {/* Abaya */}
-            <li
-                className={`cursor-pointer flex flex-col items-center transition-all duration-300 ${
-                    location.pathname === "/abaya"
-                        ? "text-[#C9A227]"
-                        : "text-[#111111] hover:text-[#C9A227]"
-                }`}
-            >
-                <Link to='/abaya'>Abaya</Link>
+                            <Link
+                                to='/abaya'
+                                onClick={() => setMobileMenu(false)}
+                            >
+                                <li className='hover:text-[#C9A227]'>
+                                    Abaya
+                                </li>
+                            </Link>
 
-                {location.pathname === "/abaya" && (
-                    <div className='w-[80%] h-[3px] bg-[#C9A227] mt-1 rounded-full'></div>
-                )}
-            </li>
+                            <Link
+                                to='/scarf'
+                                onClick={() => setMobileMenu(false)}
+                            >
+                                <li className='hover:text-[#C9A227]'>
+                                    Scarfs
+                                </li>
+                            </Link>
 
-            {/* Scarfs */}
-            <li
-                className={`cursor-pointer flex flex-col items-center transition-all duration-300 ${
-                    location.pathname === "/scarf"
-                        ? "text-[#C9A227]"
-                        : "text-[#111111] hover:text-[#C9A227]"
-                }`}
-            >
-                <Link to='/scarf'>Scarfs</Link>
-
-                {location.pathname === "/scarf" && (
-                    <div className='w-[80%] h-[3px] bg-[#C9A227] mt-1 rounded-full'></div>
-                )}
-            </li>
-
-        </ul>
-
-        <div className='hidden md:block'>
-            <SearchBar />
-        </div>
-
-            {/* Actions */}
-            <div className='flex gap-2 md:gap-6 items-center'>
-
-                <Link to='/login'>
-                    <button className="px-4 py-2 md:px-7 md:py-2.5 bg-[#C9A227] text-white md:text-[20px] text-[13px] rounded-full font-semibold hover:bg-[#b08d1f] hover:shadow-lg transition-all duration-300">
-                        Login
-                    </button>
-                </Link>
-                
-                <Link to='/wishlist'>
-                    <div className="relative cursor-pointer group">
-
-                        <FaRegHeart className="text-[25px] md:text-[30px] text-[#111111] group-hover:text-[#C9A227] transition-all duration-300" />
-
-                        <span className="absolute -top-2 -right-3 bg-[#C9A227] text-white text-[12px] font-semibold w-6 h-6 rounded-full flex items-center justify-center">
-                            {wishlistItems.length}
-                        </span>
+                        </ul>
 
                     </div>
-                </Link>
-
-                <Link to='/cart'>
-                    <div className="relative cursor-pointer group">
-                        <FiShoppingCart className="sm:text-[30px] text-[25px] md:text-[38px] text-[#111111] group-hover:text-[#C9A227] transition-all duration-300" />
-
-                        <span className="absolute -top-2 -right-3 bg-[#C9A227] text-white text-[12px] font-semibold w-6 h-6 rounded-full flex items-center justify-center">
-                            {
-                                Object.values(cartItems).reduce(
-                                    (total, item) => total + item,
-                                    0
-                                )
-                            }
-                        </span>
-                    </div>
-                </Link>
-
-            </div>
-
-        </div>
-
-        
+                )
+            }
+        </>
     );
 };
 
-
-export default Navbar
+export default Navbar;

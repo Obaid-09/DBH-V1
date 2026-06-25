@@ -10,6 +10,8 @@ import Wishlist from './Pages/Wishlist'
 import LoginSignup from './Pages/LoginSignup'
 import Checkout from './Pages/Checkout';
 import Footer from './Components/Footer/Footer';
+import MyOrders from './Pages/MyOrders';
+import OrderSuccess from './Pages/OrderSuccess';
 import abaya_banner from './Components/Assets/abaya_banner.jpg'
 import scarf_banner from './Components/Assets/scarf_banner.jpg'
 import {ToastContainer} from 'react-toastify';
@@ -32,6 +34,8 @@ function App() {
         <Route path = '/login' element = {<LoginSignup/>}/>
         <Route path = '/wishlist' element = {<Wishlist/>}/>
         <Route path='/checkout' element={<Checkout />} />
+        <Route path='/order-success' element={<OrderSuccess />} />
+        <Route path='/orders' element={<MyOrders />} />
       </Routes>
       <Footer/>
       <ToastContainer

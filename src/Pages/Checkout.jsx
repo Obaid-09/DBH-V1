@@ -1,19 +1,25 @@
 import React, { useContext, useState } from 'react';
 import { ShopContext } from '../Context/ShpContext';
 import { FaTruck, FaGooglePay, FaCreditCard } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
 
     const { getTotalCartAmount } = useContext(ShopContext);
 
     const [paymentMethod, setPaymentMethod] = useState("cod");
-
+    const navigate = useNavigate();
+    
     const handleSubmit = (e) => {
         e.preventDefault();
 
         // Later you can call API here
         alert("Order Placed Successfully!");
+        navigate('/order-success');
     };
+
+    
+
 
     return (
         <div className='bg-[#F8F6F2] min-h-screen px-6 md:px-12 py-12'>

@@ -5,6 +5,7 @@ import {
   FaFacebookF,
   FaWhatsapp
 } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
@@ -45,10 +46,21 @@ const Footer = () => {
           </h3>
 
           <ul className='space-y-3 text-gray-400'>
-            <li className='hover:text-[#C9A227] cursor-pointer'>Home</li>
-            <li className='hover:text-[#C9A227] cursor-pointer'>Abayas</li>
-            <li className='hover:text-[#C9A227] cursor-pointer'>Scarfs</li>
-            <li className='hover:text-[#C9A227] cursor-pointer'>Cart</li>
+            <li className='hover:text-[#C9A227] cursor-pointer'>
+              <Link to='/'>Home</Link>
+            </li>
+
+            <li className='hover:text-[#C9A227] cursor-pointer'>
+              <Link to='/abaya'>Abayas</Link>
+            </li>
+
+            <li className='hover:text-[#C9A227] cursor-pointer'>
+              <Link to='/scarf'>Scarfs</Link>
+            </li>
+
+            <li className='hover:text-[#C9A227] cursor-pointer'>
+              <Link to='/cart'>Cart</Link>
+            </li>
           </ul>
         </div>
 
