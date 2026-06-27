@@ -23,6 +23,7 @@ import productRouter from "./routes/product.routes.js";
 import cartRouter from "./routes/cart.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import wishlistRouter from "./routes/wishlist.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 
 
 
@@ -33,13 +34,8 @@ app.use("/api/v1/products", productRouter);
 app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/wishlist", wishlistRouter);
-// app.use("/api/v1/tweets", tweetRouter)
-// app.use("/api/v1/subscriptions", subscriptionRouter)
-// app.use("/api/v1/videos", videoRouter)
-// app.use("/api/v1/comments", commentRouter)
-// app.use("/api/v1/likes", likeRouter)
-// app.use("/api/v1/playlist", playlistRouter)
-// app.use("/api/v1/dashboard", dashboardRouter)
+app.use("/api/v1/admin", adminRouter);
+
 
 // http://localhost:4000/api/v1/users/register
 export { app };

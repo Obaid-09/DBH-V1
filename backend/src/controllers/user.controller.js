@@ -49,13 +49,13 @@ const registerUser = asyncHandler(async (req, res) => {
   // console.log("req.body =", req.body);
   // console.log("req.files =", req.files);
 
-  console.log(req.files);
-console.log(req.body);
+//   console.log(req.files);
+// console.log(req.body);
 
-console.log("FILES:", req.files);
-console.log("Avatar:", req.files?.avatar);
-console.log("Avatar[0]:", req.files?.avatar?.[0]);
-console.log("Path:", req.files?.avatar?.[0]?.path);
+// console.log("FILES:", req.files);
+// console.log("Avatar:", req.files?.avatar);
+// console.log("Avatar[0]:", req.files?.avatar?.[0]);
+// console.log("Path:", req.files?.avatar?.[0]?.path);
   // 4) Check for Images
   const avatarLocalPath = req.files?.avatar?.[0]?.path;
   const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
@@ -76,7 +76,7 @@ console.log("Path:", req.files?.avatar?.[0]?.path);
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
-    console.log("Cloudinary Response:", avatar);
+    // console.log("Cloudinary Response:", avatar);
   if (!avatar) {
     throw new ApiError(400, "Avatar is required");
   }
@@ -208,8 +208,8 @@ const requestAccessToken = asyncHandler(async (req, res) => {
     }
 
 
-    console.log("Incoming:", incomingRefreshToken);
-    console.log("DB:", user.refreshToken);
+    // console.log("Incoming:", incomingRefreshToken);
+    // console.log("DB:", user.refreshToken);
 
 
     if (incomingRefreshToken !== user?.refreshToken) {
