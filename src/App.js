@@ -12,17 +12,23 @@ import Checkout from './Pages/Checkout';
 import Footer from './Components/Footer/Footer';
 import MyOrders from './Pages/MyOrders';
 import OrderSuccess from './Pages/OrderSuccess';
+import AdminDashboard from './Pages/AdminDashboard.jsx';
 import abaya_banner from './Components/Assets/abaya_banner.jpg'
 import scarf_banner from './Components/Assets/scarf_banner.jpg'
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
+  console.log("AdminDashboard:", AdminDashboard);
   return (
     <div className="App">
       <BrowserRouter>
       <Navbar/>
       <Routes>
+        <Route
+          path='/admin'
+          element={<h1>ADMIN WORKING</h1>}
+        />
         <Route path = '/' element = {<Shop category="shop"/>}/>
         <Route path = '/abaya' element = {<ShopCategory banner = {abaya_banner}category = "abaya"/>}/>
         <Route path = '/scarf' element = {<ShopCategory banner = {scarf_banner} category = "scarf"/>}/>
@@ -36,6 +42,7 @@ function App() {
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/order-success' element={<OrderSuccess />} />
         <Route path='/orders' element={<MyOrders />} />
+        {/* <Route path="/admin" element={<AdminDashboard />} /> */}
       </Routes>
       <Footer/>
       <ToastContainer
@@ -62,3 +69,19 @@ function App() {
 }
 
 export default App;
+
+
+// import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// function App() {
+//   return (
+//     <BrowserRouter>
+//       <Routes>
+//         <Route path="/" element={<h1>HOME PAGE</h1>} />
+//         <Route path="/admin" element={<h1>ADMIN WORKING</h1>} />
+//       </Routes>
+//     </BrowserRouter>
+//   );
+// }
+
+// export default App;
