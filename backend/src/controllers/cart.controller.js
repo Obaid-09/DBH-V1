@@ -8,8 +8,11 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 const addToCart = asyncHandler(async (req, res) => {
 
-    const { productId, quantity = 1 } = req.body;
+    const { productId, quantity = 1, size } = req.body;
 
+    if (!size) {
+        throw new ApiError(400, "Size is required");
+    }
     if (!productId) {
         throw new ApiError(400, "Product ID is required");
     }
@@ -32,7 +35,8 @@ const addToCart = asyncHandler(async (req, res) => {
             items: [
                 {
                     product: productId,
-                    quantity
+                    quantity, 
+                    size
                 }
             ]
         });
@@ -40,8 +44,13 @@ const addToCart = asyncHandler(async (req, res) => {
     } else {
 
         // Check if product already exists in cart
+        // const itemIndex = cart.items.findIndex(
+        //     item => item.product.toString() === productId
+        // );
         const itemIndex = cart.items.findIndex(
-            item => item.product.toString() === productId
+            item =>
+                item.product.toString() === productId &&
+                item.size === size
         );
 
         if (itemIndex > -1) {
@@ -53,7 +62,8 @@ const addToCart = asyncHandler(async (req, res) => {
 
             cart.items.push({
                 product: productId,
-                quantity
+                quantity, 
+                size
             });
 
         }
