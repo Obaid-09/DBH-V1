@@ -1,88 +1,172 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import all_products from "../Components/Assets/all_products";
+import API from "../services/api";
 import { toast } from 'react-toastify';
+
+
+
+
+
 
 // Create Context
 export const ShopContext = createContext(null);
 
-// Default Cart
-const getDefaultCart = () => {
-    let cart = {};
-
-    for (let i = 0; i < all_products.length + 1; i++) {
-        cart[i] = 0;
-    }
-
-    return cart;
-};
 
 const ShopContextProvider = (props) => {
 
     const [wishlistItems, setWishlistItems] = useState([]);
-    const [cartItems, setCartItems] = useState(getDefaultCart());
+    const [cartItems, setCartItems] = useState([]);
+    const fetchCart = async () => {
+        try {
+            const user = localStorage.getItem("user");
+            if (!user) return;
+            const res = await API.get("/cart", {
+                withCredentials: true
+            });
+            setCartItems(res.data.data.items || []);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchWishlist = async () => {
+        try {
+
+            const user = localStorage.getItem("user");
+            if (!user) return;
+
+            const res = await API.get(
+                "/wishlist",
+                {
+                    withCredentials: true
+                }
+            );
+
+            setWishlistItems(
+                res.data.data.products || []
+            );
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCart();
+        fetchWishlist();
+    }, []);
 
     // Add Item
-    const addToCart = (itemId) => {
-        setCartItems((prev) => ({
-            ...prev,
-            [itemId]: prev[itemId] + 1
-        }));
-        toast.success("Item added to cart 🛒");
+    const addToCart = async (productId, size) => {
+        try {
+            await API.post(
+                "/cart/add",
+                {
+                    productId,
+                    quantity: 1,
+                    size
+                },
+                {
+                    withCredentials: true
+                }
+            );
+            toast.success("Item added to cart 🛒");
+            fetchCart();
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to add item");
+        }
     };
 
     // Remove Item
-    const removeFromCart = (itemId) => {
-        setCartItems((prev) => ({
-            ...prev,
-            [itemId]: prev[itemId] - 1
-        }));
+    const removeFromCart = async (productId) => {
+        try {
+            await API.delete(
+                `/cart/remove/${productId}`,
+                {
+                    withCredentials: true
+                }
+            );
+            fetchCart();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     // Total Amount
     const getTotalCartAmount = () => {
+        let total = 0;
+        cartItems.forEach((item) => {
 
-        let totalAmount = 0;
+            total +=
+                item.product.price *
+                item.quantity;
 
-        for (const item in cartItems) {
-
-            if (cartItems[item] > 0) {
-
-                let itemInfo = all_products.find(
-                    (product) => product.id === Number(item)
-                );
-
-                totalAmount += itemInfo.new_price * cartItems[item];
-            }
-        }
-
-        return totalAmount;
+        });
+        return total;
     };
 
-    const addToWishlist = (itemId) => {
-
-        if (!wishlistItems.includes(itemId)) {
-            setWishlistItems((prev) => [...prev, itemId]);
-        }
-        toast.success("Added to Wishlist ❤️");
+    // Total Cart Items
+    const getTotalCartItems = () => {
+        let total = 0;
+        cartItems.forEach((item) => {
+            total += item.quantity;
+        });
+        return total;
     };
 
-    const removeFromWishlist = (itemId) => {
-        setWishlistItems(
-            wishlistItems.filter((id) => id !== itemId)
-        );
-        toast.info("Removed from Wishlist");
+    const addToWishlist = async (productId) => {
+        try {
+            await API.post(
+                "/wishlist/add",
+                {
+                    productId
+                },
+                {
+                    withCredentials: true
+                }
+            );
+            toast.success("Added to Wishlist ❤️");
+            fetchWishlist();
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+
+    const removeFromWishlist = async (productId) => {
+        try {
+            await API.delete(
+                `/wishlist/${productId}`,
+                {
+                    withCredentials: true
+                }
+            );
+            setWishlistItems((prev) =>
+                prev.filter(
+                    (item) => item._id !== productId
+                )
+            );
+            toast.info("Removed from Wishlist");
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to remove item");
+        }
     };
 
     const contextValue = {
-        all_products,
-        cartItems,
-        addToCart,
-        removeFromCart,
-        getTotalCartAmount,
-        wishlistItems,
-        addToWishlist,
-        removeFromWishlist
-    };
+    all_products,
+    cartItems,
+    fetchCart,
+    addToCart,
+    removeFromCart,
+    getTotalCartAmount,
+    getTotalCartItems,
+    wishlistItems,
+    fetchWishlist,
+    addToWishlist,
+    removeFromWishlist
+};
 
     return (
         <ShopContext.Provider value={contextValue}>

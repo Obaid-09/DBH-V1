@@ -6,13 +6,17 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShopContext } from '../../Context/ShpContext';
 import { FaRegHeart } from "react-icons/fa";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
+import { useAuth } from "../../Context/AuthContext";
+
 
 const Navbar = () => {
 
     const { cartItems, wishlistItems } = useContext(ShopContext);
     const location = useLocation();
-
+    const { user, logout } = useAuth();
+    console.log("Navbar User:", user);
     const [mobileMenu, setMobileMenu] = useState(false);
+    const { getTotalCartItems } = useContext(ShopContext);
 
     return (
         <>
@@ -108,11 +112,30 @@ const Navbar = () => {
                 {/* Actions */}
                 <div className='flex gap-2 md:gap-6 items-center'>
 
-                    <Link to='/login'>
-                        <button className="px-4 py-2 md:px-7 md:py-2.5 bg-[#C9A227] text-white md:text-[20px] text-[13px] rounded-full font-semibold hover:bg-[#b08d1f] hover:shadow-lg transition-all duration-300">
-                            Login
-                        </button>
-                    </Link>
+                    {
+                        user ? (
+                            <div className="flex items-center gap-3">
+
+                                <span className="hidden md:block text-[#111111] font-medium">
+                                    {user.fullname}
+                                </span>
+
+                                <button
+                                    onClick={logout}
+                                    className="px-4 py-2 md:px-7 md:py-2.5 bg-red-500 text-white md:text-[18px] text-[13px] rounded-full font-semibold hover:bg-red-600 transition-all duration-300"
+                                >
+                                    Logout
+                                </button>
+
+                            </div>
+                        ) : (
+                            <Link to='/login'>
+                                <button className="px-4 py-2 md:px-7 md:py-2.5 bg-[#C9A227] text-white md:text-[20px] text-[13px] rounded-full font-semibold hover:bg-[#b08d1f] hover:shadow-lg transition-all duration-300 cursor-pointer">
+                                    Login
+                                </button>
+                            </Link>
+                        )
+                    }
 
                     {/* Wishlist */}
                     <Link to='/wishlist'>
@@ -133,14 +156,17 @@ const Navbar = () => {
 
                             <FiShoppingCart className="sm:text-[30px] text-[25px] md:text-[38px] text-[#111111] group-hover:text-[#C9A227] transition-all duration-300" />
 
-                            <span className="absolute -top-2 -right-3 bg-[#C9A227] text-white text-[12px] font-semibold w-6 h-6 rounded-full flex items-center justify-center">
+                            {/* <span className="absolute -top-2 -right-3 bg-[#C9A227] text-white text-[12px] font-semibold w-6 h-6 rounded-full flex items-center justify-center">
                                 {
                                     Object.values(cartItems).reduce(
                                         (total, item) => total + item,
                                         0
                                     )
                                 }
-                            </span>
+                            </span> */}
+                            <div className="absolute -top-2 -right-2 bg-[#C9A227] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                                {getTotalCartItems()}
+                            </div>
 
                         </div>
                     </Link>

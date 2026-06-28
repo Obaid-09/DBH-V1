@@ -1,9 +1,30 @@
 import React, { useState } from 'react';
+import { useAuth } from "../Context/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 const LoginSignup = () => {
 
     const [state, setState] = useState("Login");
+    const { login } = useAuth();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await login({
+                email,
+                password
+            });
+
+            navigate("/");
+        }
+        catch (err) {
+            console.log(err);
+        }
+    };
     return (
         <div className='min-h-screen bg-[#F8F6F2] flex justify-center items-center py-16 px-4'>
 
@@ -38,22 +59,44 @@ const LoginSignup = () => {
                         />
                     )}
 
-                    <input
+                    {/* <input
                         type="email"
                         placeholder='Email Address'
                         className='border border-gray-300 rounded-full px-6 py-4 outline-none focus:border-[#C9A227]'
+                    /> */}
+
+                    <input
+                        type="email"
+                        placeholder="Email Address"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className='border border-gray-300 rounded-full px-6 py-4 outline-none focus:border-[#C9A227]'
                     />
+
+                    {/* <input
+                        type="password"
+                        placeholder='Password'
+                        className='border border-gray-300 rounded-full px-6 py-4 outline-none focus:border-[#C9A227]'
+                    /> */}
 
                     <input
                         type="password"
-                        placeholder='Password'
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className='border border-gray-300 rounded-full px-6 py-4 outline-none focus:border-[#C9A227]'
                     />
 
                 </div>
 
                 {/* Button */}
-                <button className='w-full mt-8 py-4 bg-[#C9A227] text-white rounded-full font-semibold text-lg hover:bg-[#b08d1f] transition-all duration-300'>
+                {/* <button className='w-full mt-8 py-4 bg-[#C9A227] text-white rounded-full font-semibold text-lg hover:bg-[#b08d1f] transition-all duration-300'>
+                    {state === "Login" ? "Login" : "Create Account"}
+                </button> */}
+                <button
+                    onClick={handleSubmit}
+                    className='w-full mt-8 py-4 bg-[#C9A227] text-white rounded-full font-semibold text-lg hover:bg-[#b08d1f] transition-all duration-300'
+                >
                     {state === "Login" ? "Login" : "Create Account"}
                 </button>
 

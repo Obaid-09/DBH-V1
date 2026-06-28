@@ -39,7 +39,7 @@ const Item = ({ id, image, name, new_price, old_price, rating }) => {
     wishlistItems
 } = useContext(ShopContext);
 
-console.log(name, rating);
+// console.log(name, rating);
   return (
     <div className="w-[260px] bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 group">
 
@@ -59,13 +59,15 @@ console.log(name, rating);
             onClick={(e) => {
                 e.stopPropagation();
 
-                wishlistItems.includes(id)
-                    ? removeFromWishlist(id)
-                    : addToWishlist(id);
+                wishlistItems.some(
+                        item => item._id === id
+                    )
+                        ? removeFromWishlist(id)
+                        : addToWishlist(id)
             }}
         >
             {
-                wishlistItems.includes(id)
+                wishlistItems.some(item => item._id === id)
                     ? (
                         <FaHeart className="text-[#C9A227] text-2xl cursor-pointer" />
                     )
@@ -86,11 +88,11 @@ console.log(name, rating);
         
         <div className="flex items-center gap-2 mb-3">
             <div className="flex gap-1">
-                {renderStars(rating)}
+                {renderStars(rating || 0)}
             </div>
 
             <span className="text-sm text-gray-500">
-                ({rating})
+                ({rating || 0})
             </span>
         </div>
 
