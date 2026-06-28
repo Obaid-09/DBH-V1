@@ -12,13 +12,20 @@ import Checkout from './Pages/Checkout';
 import Footer from './Components/Footer/Footer';
 import MyOrders from './Pages/MyOrders';
 import OrderSuccess from './Pages/OrderSuccess';
+import Dashboard from './Admin/Pages/Dashboard.jsx';
+import AdminLayout from './Admin/Layout/Adminlayout.jsx';
+import Products from './Admin/Pages/Products.jsx';
+import Orders from './Admin/Pages/Orders.jsx';
+import Users from './Admin/Pages/Users.jsx';
+import Analytics from './Admin/Pages/Analytics.jsx';
+import Coupons from './Admin/Pages/Coupons.jsx';
+import Settings from './Admin/Pages/Settings.jsx';
 import abaya_banner from './Components/Assets/abaya_banner.jpg'
 import scarf_banner from './Components/Assets/scarf_banner.jpg'
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  console.log("AdminDashboard:", AdminDashboard);
   return (
     <div className="App">
       <BrowserRouter>
@@ -41,6 +48,15 @@ function App() {
         <Route path='/checkout' element={<Checkout />} />
         <Route path='/order-success' element={<OrderSuccess />} />
         <Route path='/orders' element={<MyOrders />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="products" element={<Products />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="users" element={<Users />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="coupons" element={<Coupons />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Routes>
       <Footer/>
       <ToastContainer
