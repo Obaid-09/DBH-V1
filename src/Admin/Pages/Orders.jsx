@@ -1,77 +1,268 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import API from "../../services/api";
+import { toast } from "react-toastify";
 
 const Orders = () => {
-  const orders = [
-    {
-      _id: "ORD001",
-      customer: "Obaid",
-      amount: 2999,
-      status: "Processing",
-      date: "26 June 2026",
-    },
-    {
-      _id: "ORD002",
-      customer: "Ahmed",
-      amount: 4999,
-      status: "Delivered",
-      date: "25 June 2026",
-    },
-  ];
 
-  return (
-    <div className="bg-white p-6 rounded-xl shadow">
-      <h1 className="text-3xl font-bold mb-6">Orders</h1>
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left">
+    const fetchOrders = async () => {
 
-          <thead className="border-b">
-            <tr>
-              <th className="py-4">Order ID</th>
-              <th>Customer</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        try {
 
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id} className="border-b hover:bg-gray-50">
+            const res = await API.get(
+                "/orders",
+                {
+                    withCredentials: true
+                }
+            );
 
-                <td className="py-4">{order._id}</td>
-                <td>{order.customer}</td>
-                <td>₹{order.amount}</td>
-                <td>{order.date}</td>
+            setOrders(res.data.data);
 
-                <td>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm
-                    ${
-                      order.status === "Delivered"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-                </td>
+        } catch (error) {
 
-                <td>
-                  <button className="bg-[#C9A227] text-white px-4 py-2 rounded">
-                    Update
-                  </button>
-                </td>
+            console.log(error);
+            toast.error("Failed to fetch orders");
 
-              </tr>
-            ))}
-          </tbody>
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        </table>
-      </div>
-    </div>
-  );
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+
+    const updateStatus = async (orderId, orderStatus) => {
+
+        try {
+
+            await API.patch(
+                `/orders/${orderId}`,
+                { orderStatus },
+                {
+                    withCredentials: true
+                }
+            );
+
+            toast.success("Order status updated");
+
+            fetchOrders();
+
+        } catch (error) {
+
+            console.log(error);
+            toast.error("Failed to update status");
+        }
+    };
+
+    if (loading) {
+        return <h1>Loading...</h1>;
+    }
+
+    return (
+        <div className="bg-white p-6 rounded-xl shadow">
+
+            <h1 className="text-3xl font-bold mb-8">
+                Orders
+            </h1>
+
+            <div className="space-y-8">
+
+                {orders.map((order) => (
+
+                    <div
+                        key={order._id}
+                        className="border rounded-xl p-6"
+                    >
+
+                        {/* Top */}
+                        <div className="flex justify-between items-center mb-6">
+
+                            <div>
+
+                                <h2 className="font-bold text-xl">
+                                    Order #{order._id.slice(-6)}
+                                </h2>
+
+                                <p className="text-gray-500">
+                                    Customer:
+                                    {" "}
+                                    {order.user?.fullname}
+                                </p>
+
+                                <p className="text-gray-500">
+                                    Email:
+                                    {" "}
+                                    {order.user?.email}
+                                </p>
+
+                            </div>
+
+                            <div>
+
+                                <p className="font-bold text-2xl text-[#C9A227]">
+                                    ₹{order.totalAmount}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        {/* Products */}
+                        <div className="mb-6">
+
+                            <h3 className="font-semibold mb-4">
+                                Ordered Products
+                            </h3>
+
+                            <div className="space-y-4">
+
+                               {
+                                    order.orderItems.map((item) => {
+
+                                        if (!item.product) {
+                                            return (
+                                                <div
+                                                    key={item._id}
+                                                    className="border p-3 rounded-lg text-red-500"
+                                                >
+                                                    Product no longer exists
+                                                </div>
+                                            );
+                                        }
+
+                                        return (
+                                            <div
+                                                key={item._id}
+                                                className="flex gap-4 items-center border p-3 rounded-lg"
+                                            >
+
+                                                <img
+                                                    src={item.product.images?.[0]}
+                                                    alt={item.product.name}
+                                                    className="w-20 h-20 object-cover rounded-lg"
+                                                />
+
+                                                <div>
+
+                                                    <h4 className="font-semibold">
+                                                        {item.product.name}
+                                                    </h4>
+
+                                                    <p>
+                                                        Qty: {item.quantity}
+                                                    </p>
+
+                                                    <p>
+                                                        ₹{item.price}
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+                                        );
+                                    })
+                                }
+
+                            </div>
+
+                        </div>
+
+                        {/* Shipping */}
+                        <div className="mb-6">
+
+                            <h3 className="font-semibold mb-2">
+                                Shipping Address
+                            </h3>
+
+                            <p>
+                                {order.shippingAddress.fullName}
+                            </p>
+
+                            <p>
+                                {order.shippingAddress.phone}
+                            </p>
+
+                            <p>
+                                {order.shippingAddress.address}
+                            </p>
+
+                            <p>
+                                {order.shippingAddress.city},
+                                {" "}
+                                {order.shippingAddress.state}
+                                {" - "}
+                                {order.shippingAddress.pincode}
+                            </p>
+
+                        </div>
+
+                        {/* Bottom */}
+                        <div className="flex justify-between items-center">
+
+                            <div>
+
+                                <p>
+                                    Payment:
+                                    {" "}
+                                    {order.paymentMethod}
+                                </p>
+
+                                <p>
+                                    Status:
+                                    {" "}
+                                    <span className="font-semibold">
+                                        {order.orderStatus}
+                                    </span>
+                                </p>
+
+                            </div>
+
+                            <select
+                                value={order.orderStatus}
+                                onChange={(e) =>
+                                    updateStatus(
+                                        order._id,
+                                        e.target.value
+                                    )
+                                }
+                                className="border p-3 rounded-lg"
+                            >
+
+                                <option value="Processing">
+                                    Processing
+                                </option>
+
+                                <option value="Confirmed">
+                                    Confirmed
+                                </option>
+
+                                <option value="Shipped">
+                                    Shipped
+                                </option>
+
+                                <option value="Delivered">
+                                    Delivered
+                                </option>
+
+                                <option value="Cancelled">
+                                    Cancelled
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                ))}
+
+            </div>
+
+        </div>
+    );
 };
 
 export default Orders;

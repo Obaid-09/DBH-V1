@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from "../Context/AuthContext";
 import { useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 const LoginSignup = () => {
 
@@ -18,11 +19,20 @@ const LoginSignup = () => {
                 email,
                 password
             });
-
+            toast.success("Login Successful");
             navigate("/");
         }
         catch (err) {
             console.log(err);
+            const message = err?.response?.data?.message;
+            if (
+                message?.toLowerCase().includes("password")
+            ) {
+                toast.error("Incorrect Password");
+            }
+            else {
+                toast.error(message || "Login Failed");
+            }
         }
     };
     return (
@@ -99,7 +109,15 @@ const LoginSignup = () => {
                 >
                     {state === "Login" ? "Login" : "Create Account"}
                 </button>
-
+                
+                <div className='flex justify-end mt-2'>
+                    <span
+                        onClick={() => navigate('/change-password')}
+                        className='text-sm text-[#C9A227] cursor-pointer hover:underline'
+                    >
+                        Forgot Password?
+                    </span>
+                </div>
                 {/* Toggle */}
                 <p className='text-center text-gray-600 mt-6'>
 

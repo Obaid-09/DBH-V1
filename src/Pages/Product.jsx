@@ -254,8 +254,8 @@ import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import Breadcrum from '../Components/Breadcrum/Breadcrum';
 import RelatedProducts from '../Components/RelatedProducts/RelatedProducts';
-
 import API from '../services/api';
+import {useAuth} from '../Context/AuthContext.jsx'
 
 const renderStars = (rating) => {
     const stars = [];
@@ -290,9 +290,57 @@ const Product = () => {
     const [loading, setLoading] = useState(true);
     const [currentImage, setCurrentImage] = useState(0);
     const [selectedSize, setSelectedSize] = useState("");
+    const [reviews, setReviews] = useState([]);
+    const [rating, setRating] = useState(5);
+    const [comment, setComment] = useState("");
+    const { user } = useAuth();
     useEffect(() => {
         fetchProduct();
     });
+
+    const fetchReviews = async () => {
+        try {
+            const res = await API.get(
+                `/reviews/${product._id}`
+            );
+
+            setReviews(res.data.data);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+        if(product?._id){
+            fetchReviews();
+        }
+    });
+
+    const submitReview = async (e) => {
+        e.preventDefault();
+        try {
+            await API.post(
+                `/reviews/${product._id}`,
+                {
+                    rating,
+                    comment
+                },
+                {
+                    withCredentials: true
+                }
+            );
+            toast.success("Review added");
+            setComment("");
+            setRating(5);
+            fetchReviews();
+        } catch (error) {
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to add review"
+            );
+            console.log(error);
+        }
+    };
 
     const fetchProduct = async () => {
         try {
@@ -426,16 +474,14 @@ const Product = () => {
                         {product.name}
                     </h1>
 
-                    <div className='flex items-center gap-2'>
-
-                        <div className='flex gap-1'>
-                            {renderStars(product.averageRating || 0)}
-                        </div>
-
-                        <span className='text-gray-500'>
-                            ({product.averageRating || 0})
+                    <div className='flex items-center gap-3 mt-3'>
+                        <span className='text-[#C9A227] text-xl'>
+                            ⭐ {product.averageRating?.toFixed(1) || 0}
                         </span>
 
+                        <span className='text-gray-500'>
+                            ({product.numReviews || 0} Reviews)
+                        </span>
                     </div>
 
                     <div className='flex items-center gap-5'>
@@ -520,6 +566,95 @@ const Product = () => {
                     </div>
 
                 </div>
+
+            </div>
+            
+            <div className='mt-16'>
+                <h2 className='text-3xl font-serif mb-8'>
+                    Customer Reviews
+                </h2>
+                {
+                    user && (
+                        <form
+                            onSubmit={submitReview}
+                            className='bg-white p-6 rounded-2xl shadow mb-10'
+                        >
+                            <h3 className='text-xl font-semibold mb-4'>
+                                Write a Review
+                            </h3>
+
+                            {/* Rating */}
+                            <select
+                                value={rating}
+                                onChange={(e) =>
+                                    setRating(Number(e.target.value))
+                                }
+                                className='border p-3 rounded-xl mb-4 w-full'
+                            >
+                                <option value={1}>1 Star</option>
+                                <option value={2}>2 Stars</option>
+                                <option value={3}>3 Stars</option>
+                                <option value={4}>4 Stars</option>
+                                <option value={5}>5 Stars</option>
+                            </select>
+                            {/* Comment */}
+                            <textarea
+                                rows="4"
+                                value={comment}
+                                onChange={(e) =>
+                                    setComment(e.target.value)
+                                }
+                                placeholder='Write your review...'
+                                className='w-full border rounded-xl p-4 mb-4'
+                            />
+                            <button
+                                type='submit'
+                                className='bg-[#C9A227] text-white px-8 py-3 rounded-full'
+                            >
+                                Submit Review
+                            </button>
+                        </form>
+                    )
+                }
+
+            </div>
+
+            <div className='space-y-6'>
+                {
+                    reviews.length === 0 ? (
+                        <p>No reviews yet.</p>
+
+                    ) : (
+                        reviews.map((review) => (
+                            <div
+                                key={review._id}
+                                className='bg-white p-6 rounded-2xl shadow'
+                            >
+                                <div className='flex justify-between'>
+                                    <h3 className='font-semibold text-lg'>
+                                        {
+                                            review.user?.fullname ||
+                                            review.user?.username
+                                        }
+                                    </h3>
+                                    <span className='text-[#C9A227]'>
+                                        ⭐ {review.rating}/5
+                                    </span>
+                                </div>
+                                <p className='text-gray-600 mt-3'>
+                                    {review.comment}
+                                </p>
+                                <p className='text-sm text-gray-400 mt-3'>
+                                    {
+                                        new Date(
+                                            review.createdAt
+                                        ).toLocaleDateString()
+                                    }
+                                </p>
+                            </div>
+                        ))
+                    )
+                }
 
             </div>
 

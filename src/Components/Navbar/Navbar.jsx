@@ -114,15 +114,26 @@ const Navbar = () => {
 
                     {
                         user ? (
-                            <div className="flex items-center gap-3">
-
-                                <span className="hidden md:block text-[#111111] font-medium">
+                            <div className="flex items-center gap-4">
+                                <span className='font-medium'>
                                     {user.fullname}
                                 </span>
 
+                                <Link to="/orders">
+                                    <button className='border border-[#C9A227]
+                                                    text-[#C9A227]
+                                                    px-5 py-3
+                                                    rounded-full
+                                                    hover:bg-[#C9A227]
+                                                    hover:text-white
+                                                    transition-all duration-300'>
+                                        My Orders
+                                    </button>
+                                </Link>
+
                                 <button
                                     onClick={logout}
-                                    className="px-4 py-2 md:px-7 md:py-2.5 bg-red-500 text-white md:text-[18px] text-[13px] rounded-full font-semibold hover:bg-red-600 transition-all duration-300"
+                                    className='px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-300'
                                 >
                                     Logout
                                 </button>

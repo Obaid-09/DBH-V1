@@ -2,22 +2,97 @@ import React, { useContext, useState } from 'react';
 import { ShopContext } from '../Context/ShpContext';
 import { FaTruck, FaGooglePay, FaCreditCard } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import API from "../services/api";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
 
-    const { getTotalCartAmount } = useContext(ShopContext);
+    const {
+        getTotalCartAmount,
+        fetchCart
+    } = useContext(ShopContext);
 
-    const [paymentMethod, setPaymentMethod] = useState("cod");
+    const [paymentMethod, setPaymentMethod] = useState("COD");
     const navigate = useNavigate();
+    const [shippingAddress, setShippingAddress] = useState({
+        fullName: "",
+        phone: "",
+        address: "",
+        city: "",
+        state: "",
+        pincode: ""
+    });
+    const [couponCode, setCouponCode] = useState("");
+    const [discount, setDiscount] = useState(0);
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
     
-    const handleSubmit = (e) => {
+    const applyCoupon = async () => {
+        if (!couponCode.trim()) {
+            toast.error("Enter coupon code");
+            return;
+        }
+        try {
+            const res = await API.post(
+                "/coupons/apply",
+                {
+                    code: couponCode
+                },
+                {
+                    withCredentials: true
+                }
+            );
+            const coupon = res.data.data;
+            setAppliedCoupon(coupon);
+            setDiscount(coupon.discount);
+            toast.success(
+                `${coupon.discount}% discount applied`
+            );
+        } catch (error) {
+            console.log(error);
+            toast.error(
+                error.response?.data?.message ||
+                "Invalid Coupon"
+            );
+        }
+    };
+        const subtotal = getTotalCartAmount();
+        const discountAmount =
+            subtotal * (discount / 100);
+        const finalAmount =
+            (subtotal - discountAmount).toFixed(2);
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Later you can call API here
-        alert("Order Placed Successfully!");
-        navigate('/order-success');
+        try {
+            await API.post(
+                "/orders",
+                {
+                    shippingAddress,
+                    paymentMethod: paymentMethod.toUpperCase(),
+                    discount
+                },
+                {
+                    withCredentials: true
+                }
+            );
+            await fetchCart();
+            toast.success("Order Placed Successfully 🎉");
+            navigate("/order-success");
+        } catch (error) {
+            console.log(error);
+            toast.error(
+                error?.response?.data?.message ||
+                "Failed to place order"
+            );
+        }
     };
 
+    const handleChange = (e) => {
+
+        setShippingAddress({
+            ...shippingAddress,
+            [e.target.name]: e.target.value
+        });
+    };
     
 
 
@@ -58,8 +133,10 @@ const Checkout = () => {
                         <input
                             type='text'
                             required
+                            name="fullName"
+                            value={shippingAddress.fullName}
+                            onChange={handleChange}
                             placeholder='Enter Full Name'
-                            className='w-full border border-gray-300 rounded-xl px-5 py-4 outline-none focus:border-[#C9A227]'
                         />
                     </div>
 
@@ -87,6 +164,9 @@ const Checkout = () => {
                             <input
                                 type='tel'
                                 required
+                                name="phone"
+                                value={shippingAddress.phone}
+                                onChange={handleChange}
                                 placeholder='Enter Phone Number'
                                 className='w-full border border-gray-300 rounded-xl px-5 py-4 outline-none focus:border-[#C9A227]'
                             />
@@ -103,13 +183,16 @@ const Checkout = () => {
                         <input
                             type='text'
                             required
+                            name="address"
+                            value={shippingAddress.address}
+                            onChange={handleChange}
                             placeholder='House No, Street Name'
                             className='w-full border border-gray-300 rounded-xl px-5 py-4 outline-none focus:border-[#C9A227]'
                         />
                     </div>
 
                     {/* Address Line 2 */}
-                    <div className='mb-5'>
+                    {/* <div className='mb-5'>
                         <label className='block mb-2 font-medium'>
                             Address Line 2
                         </label>
@@ -119,7 +202,7 @@ const Checkout = () => {
                             placeholder='Apartment, Landmark (Optional)'
                             className='w-full border border-gray-300 rounded-xl px-5 py-4 outline-none focus:border-[#C9A227]'
                         />
-                    </div>
+                    </div> */}
 
                     {/* City + State */}
                     <div className='grid md:grid-cols-2 gap-5 mb-5'>
@@ -132,6 +215,9 @@ const Checkout = () => {
                             <input
                                 type='text'
                                 required
+                                name="city"
+                                value={shippingAddress.city}
+                                onChange={handleChange}
                                 placeholder='Enter City'
                                 className='w-full border border-gray-300 rounded-xl px-5 py-4 outline-none focus:border-[#C9A227]'
                             />
@@ -145,6 +231,9 @@ const Checkout = () => {
                             <input
                                 type='text'
                                 required
+                                name="state"
+                                value={shippingAddress.state}
+                                onChange={handleChange}
                                 placeholder='Enter State'
                                 className='w-full border border-gray-300 rounded-xl px-5 py-4 outline-none focus:border-[#C9A227]'
                             />
@@ -155,7 +244,7 @@ const Checkout = () => {
                     {/* Country + Pincode */}
                     <div className='grid md:grid-cols-2 gap-5 mb-10'>
 
-                        <div>
+                        {/* <div>
                             <label className='block mb-2 font-medium'>
                                 Country <span className='text-red-500'>*</span>
                             </label>
@@ -166,7 +255,7 @@ const Checkout = () => {
                                 placeholder='Enter Country'
                                 className='w-full border border-gray-300 rounded-xl px-5 py-4 outline-none focus:border-[#C9A227]'
                             />
-                        </div>
+                        </div> */}
 
                         <div>
                             <label className='block mb-2 font-medium'>
@@ -176,6 +265,9 @@ const Checkout = () => {
                             <input
                                 type='number'
                                 required
+                                name="pincode"
+                                value={shippingAddress.pincode}
+                                onChange={handleChange}
                                 placeholder='Enter Pincode'
                                 className='w-full border border-gray-300 rounded-xl px-5 py-4 outline-none focus:border-[#C9A227]'
                             />
@@ -193,8 +285,8 @@ const Checkout = () => {
                         <label className='flex items-center gap-4 p-5 border rounded-2xl cursor-pointer hover:border-[#C9A227]'>
                             <input
                                 type='radio'
-                                checked={paymentMethod === "cod"}
-                                onChange={() => setPaymentMethod("cod")}
+                                checked={paymentMethod === "COD"}
+                                onChange={() => setPaymentMethod("COD")}
                             />
                                     <FaTruck className='text-2xl text-[#C9A227]' />
 
@@ -207,8 +299,8 @@ const Checkout = () => {
                         <label className='flex items-center gap-4 p-5 border rounded-2xl cursor-pointer hover:border-[#C9A227]'>
                             <input
                                 type='radio'
-                                checked={paymentMethod === "upi"}
-                                onChange={() => setPaymentMethod("upi")}
+                                checked={paymentMethod === "UPI"}
+                                onChange={() => setPaymentMethod("UPI")}
                             />
                             <FaGooglePay className='text-2xl text-[#C9A227]' />
 
@@ -220,8 +312,8 @@ const Checkout = () => {
                         <label className='flex items-center gap-4 p-5 border rounded-2xl cursor-pointer hover:border-[#C9A227]'>
                             <input
                                 type='radio'
-                                checked={paymentMethod === "razorpay"}
-                                onChange={() => setPaymentMethod("razorpay")}
+                                checked={paymentMethod === "RAZORPAY"}
+                                onChange={() => setPaymentMethod("RAZORPAY")}
                             />
                             <FaCreditCard className='text-2xl text-[#C9A227]' />
 
@@ -245,19 +337,61 @@ const Checkout = () => {
 
                         <div className='flex justify-between border-b pb-4'>
                             <p>Subtotal</p>
-                            <p>₹{getTotalCartAmount()}</p>
+                            {/* <p>₹{getTotalCartAmount()}</p> */}
+                            <p>₹{subtotal}</p>
                         </div>
 
                         <div className='flex justify-between border-b pb-4'>
                             <p>Shipping</p>
                             <p className='text-green-600'>FREE</p>
                         </div>
+                        
+                        <div className='flex justify-between border-b pb-4'>
+                            <p>Discount</p>
+
+                            <p className='text-green-600'>
+                                - ₹{discountAmount.toFixed(2)}
+                            </p>
+                        </div>
+
+                        <div className='mt-8'>
+                            <h3 className='font-semibold mb-4'>
+                                Apply Coupon
+                            </h3>
+
+                            <div className='flex gap-3'>
+                                <input
+                                    type='text'
+                                    placeholder='Coupon Code'
+                                    value={couponCode}
+                                    onChange={(e) =>
+                                        setCouponCode(e.target.value)
+                                    }
+                                    className='flex-1 border border-gray-300 rounded-xl px-4 py-3 outline-none'
+                                />
+                                <button
+                                    type='button'
+                                    onClick={applyCoupon}
+                                    className='bg-[#111111] text-white px-5 rounded-xl'
+                                >
+                                    Apply
+                                </button>
+                            </div>
+                            {
+                                appliedCoupon && (
+                                    <p className='text-green-600 mt-3'>
+                                        Coupon {appliedCoupon.code}
+                                        applied successfully!
+                                    </p>
+                                )
+                            }
+                        </div>
 
                         <div className='flex justify-between text-2xl font-bold'>
                             <p>Total</p>
 
                             <p className='text-[#C9A227]'>
-                                ₹{getTotalCartAmount()}
+                                ₹{finalAmount.toFixed(2)}
                             </p>
                         </div>
 

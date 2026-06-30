@@ -154,7 +154,7 @@
 // export default AdminDashboard;
 
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import StatCard from "../Components/StatCard";
 import {
   FaUsers,
@@ -163,7 +163,63 @@ import {
   FaRupeeSign
 } from "react-icons/fa";
 
+import API from "../../services/api";
+import { toast } from "react-toastify";
+
 const Dashboard = () => {
+
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalProducts: 0,
+    totalOrders: 0,
+    totalRevenue: 0
+  });
+
+  const [loading, setLoading] = useState(true);
+
+  const fetchDashboardStats = async () => {
+
+    try {
+
+      const res = await API.get(
+        "/admin/dashboard",
+        {
+          withCredentials: true
+        }
+      );
+
+      setStats(res.data.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+      toast.error(
+        error?.response?.data?.message ||
+        "Failed to load dashboard stats"
+      );
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[80vh]">
+        <h1 className="text-3xl font-bold">
+          Loading Dashboard...
+        </h1>
+      </div>
+    );
+  }
+
   return (
     <div>
 
@@ -171,31 +227,32 @@ const Dashboard = () => {
         Dashboard
       </h1>
 
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
 
         <StatCard
           title="Revenue"
-          value="₹25000"
+          value={`₹${stats.totalRevenue}`}
           icon={<FaRupeeSign />}
         />
 
         <StatCard
           title="Orders"
-          value="56"
+          value={stats.totalOrders}
           icon={<FaShoppingCart />}
         />
 
         <StatCard
           title="Products"
-          value="120"
+          value={stats.totalProducts}
           icon={<FaBox />}
         />
 
         <StatCard
           title="Users"
-          value="450"
+          value={stats.totalUsers}
           icon={<FaUsers />}
         />
+
       </div>
 
     </div>
